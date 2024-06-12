@@ -1,12 +1,12 @@
 {
-    "attributes": {
+    "relationships": {
         "friends": "undirected",
         "children": "directed"
     },
     "people": {
         "John Doe": {
             "children": [
-                "Hank Adams"
+                "Hank Doe"
             ],
             "firstname": "John",
             "friends": [
@@ -25,10 +25,10 @@
             "lastname": "Smith",
             "middle": null
         },
-        "Hank Adams": {
+        "Hank Doe": {
             "firstname": "Hank",
-            "fullname": "Hank Adams",
-            "lastname": "Adams",
+            "fullname": "Hank Doe",
+            "lastname": "Doe",
             "middle": null
         }
     }
