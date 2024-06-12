@@ -1,0 +1,35 @@
+{
+    "attributes": {
+        "friends": "undirected",
+        "children": "directed"
+    },
+    "people": {
+        "John Doe": {
+            "children": [
+                "Hank Adams"
+            ],
+            "firstname": "John",
+            "friends": [
+                "Jane Smith"
+            ],
+            "fullname": "John Doe",
+            "lastname": "Doe",
+            "middle": null
+        },
+        "Jane Smith": {
+            "firstname": "Jane",
+            "friends": [
+                "John Doe"
+            ],
+            "fullname": "Jane Smith",
+            "lastname": "Smith",
+            "middle": null
+        },
+        "Hank Adams": {
+            "firstname": "Hank",
+            "fullname": "Hank Adams",
+            "lastname": "Adams",
+            "middle": null
+        }
+    }
+}
