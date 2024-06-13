@@ -30,6 +30,28 @@
             "fullname": "Hank Doe",
             "lastname": "Doe",
             "middle": null
+        },
+        "Adam Kaufman": {
+            "bio": "cool guy",
+            "coolness": "99999",
+            "email": "cool@cool.com",
+            "firstname": "Adam",
+            "friends": [
+                "John Trudeau"
+            ],
+            "fullname": "Adam Kaufman",
+            "lastname": "Kaufman",
+            "link": "cool.ai",
+            "middle": null
+        },
+        "John Trudeau": {
+            "firstname": "John",
+            "friends": [
+                "Adam Kaufman"
+            ],
+            "fullname": "John Trudeau",
+            "lastname": "Trudeau",
+            "middle": null
         }
     }
 }
