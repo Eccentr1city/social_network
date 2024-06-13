@@ -1,7 +1,8 @@
 {
     "relationships": {
         "friends": "undirected",
-        "children": "directed"
+        "children": "directed",
+        "partner": "undirected"
     },
     "people": {
         "John Doe": {
@@ -32,7 +33,7 @@
             "middle": null
         },
         "Adam Kaufman": {
-            "bio": "cool guy",
+            "bio": "cool guy who like trains",
             "coolness": "99999",
             "email": "cool@cool.com",
             "firstname": "Adam",
@@ -42,7 +43,10 @@
             "fullname": "Adam Kaufman",
             "lastname": "Kaufman",
             "link": "cool.ai",
-            "middle": null
+            "middle": null,
+            "partner": [
+                "Naomi Bashkansky"
+            ]
         },
         "John Trudeau": {
             "firstname": "John",
@@ -52,6 +56,21 @@
             "fullname": "John Trudeau",
             "lastname": "Trudeau",
             "middle": null
+        },
+        "Jack Awesome": {
+            "firstname": "Jack",
+            "fullname": "Jack Awesome",
+            "lastname": "Awesome",
+            "middle": null
+        },
+        "Naomi Bashkansky": {
+            "firstname": "Naomi",
+            "fullname": "Naomi Bashkansky",
+            "lastname": "Bashkansky",
+            "middle": null,
+            "partner": [
+                "Adam Kaufman"
+            ]
         }
     }
 }

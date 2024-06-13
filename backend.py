@@ -46,7 +46,17 @@ class Group:
         self.graphs = dict()
         if filename:
             load_people_from_file(self, filename)
-
+    
+    def remove_person(self, name):
+        if name not in self.people:
+            return
+        person = self.people[name]
+        for relationship in self.relationships:
+            if hasattr(person, relationship):
+                for other_name in getattr(person, relationship):
+                    person.remove_relationship(other_name, relationship)
+        del self.people[name]
+        
     def save_group_to_file(self, filename):
         """Save the relationships and people in the group to a json file."""
         data = {
@@ -105,6 +115,8 @@ class Person:
         if self.fullname not in group.people:
             group.people[self.fullname] = self
         self.group = group
+        self.emails = []
+        self.links = []
 
     def add_undirected_relationship(self, name, relationship):
         """Add a mutual relationship (such as 'friends') to the Person 'name'."""
