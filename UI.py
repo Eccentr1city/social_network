@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QComboBox, QPushButton, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QScrollArea, QAbstractItemView, QTabWidget, QInputDialog, QTextEdit, QFormLayout, QFileDialog, QDialog, QDialogButtonBox, QMessageBox, QCheckBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QComboBox, QPushButton, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QScrollArea, QAbstractItemView, QTabWidget, QInputDialog, QTextEdit, QFormLayout, QFileDialog, QDialog, QDialogButtonBox, QMessageBox, QCheckBox, QSplitter, QGroupBox
 from PyQt5.QtCore import Qt
 import configparser
 from backend import *
@@ -14,11 +14,15 @@ class PersonWindow(QWidget):
 
     def init_ui(self):
         self.setWindowTitle('Person Manager')
-        self.setGeometry(100, 100, 800, 400)
+        self.setGeometry(100, 100, 800, 500)
 
-        layout = QHBoxLayout()
+        layout = QVBoxLayout()
+
+        # Splitter
+        splitter = QSplitter()
 
         # Sidebar
+        sidebar_widget = QWidget()
         sidebar_layout = QVBoxLayout()
 
         # Search input
@@ -44,14 +48,17 @@ class PersonWindow(QWidget):
         button_layout.addWidget(save_button)
         sidebar_layout.addLayout(button_layout)
 
-        layout.addLayout(sidebar_layout)
+        sidebar_widget.setLayout(sidebar_layout)
+        sidebar_widget.setMaximumWidth(250)  # Set the maximum width for the sidebar
+        splitter.addWidget(sidebar_widget)
 
         # Tab widget
         self.tab_widget = QTabWidget()
         self.tab_widget.addTab(self.create_scrollable_tab(PersonCreationTab(self)), 'Create Person')
         self.tab_widget.addTab(self.create_scrollable_tab(PersonEditTab(self)), 'Edit Person')
-        layout.addWidget(self.tab_widget)
+        splitter.addWidget(self.tab_widget)
 
+        layout.addWidget(splitter)
         self.setLayout(layout)
         self.update_person_list()
 
@@ -136,6 +143,7 @@ class PersonCreationTab(QWidget):
         self.email_layout = QVBoxLayout()
         self.link_layout = QVBoxLayout()
         self.custom_attribute_layout = QVBoxLayout()
+        self.relationship_list = QVBoxLayout()  # Add this line
         self.relationships = []
         self.init_ui()
 
@@ -143,55 +151,71 @@ class PersonCreationTab(QWidget):
         layout = QVBoxLayout()
 
         # Name input
-        name_label = QLabel('<h2>Name:</h2>')
+        name_box = QGroupBox()
+        name_layout = QVBoxLayout()
+        name_label = QLabel('<h2>Name</h2>')
         self.name_input = QLineEdit()
-        layout.addWidget(name_label)
-        layout.addWidget(self.name_input)
+        name_layout.addWidget(name_label)
+        name_layout.addWidget(self.name_input)
+        name_box.setLayout(name_layout)
+        layout.addWidget(name_box)
 
         # Bio input
-        bio_label = QLabel('<h4>Bio:</h4>')
+        bio_box = QGroupBox()
+        bio_layout = QVBoxLayout()
+        bio_label = QLabel('<h4>Bio</h4>')
         self.bio_input = QTextEdit()
         self.bio_input.setFixedHeight(100)
-        layout.addWidget(bio_label)
-        layout.addWidget(self.bio_input)
+        bio_layout.addWidget(bio_label)
+        bio_layout.addWidget(self.bio_input)
+        bio_box.setLayout(bio_layout)
+        layout.addWidget(bio_box)
 
         # Email section
-        self.email_title = QLabel('<h4>Emails:</h4>')
+        email_box = QGroupBox()
+        email_layout = QVBoxLayout()
+        self.email_title = QLabel('<h4>Emails</h4>')
         self.email_title.setVisible(False)
-        layout.addWidget(self.email_title)
-        layout.addLayout(self.email_layout)
+        email_layout.addWidget(self.email_title)
+        email_layout.addLayout(self.email_layout)
         email_button = QPushButton('Add Email')
         email_button.clicked.connect(self.add_email)
-        layout.addWidget(email_button)
+        email_layout.addWidget(email_button)
+        email_box.setLayout(email_layout)
+        layout.addWidget(email_box)
 
         # Link section
-        self.link_title = QLabel('<h4>Personal Links:</h4>')
+        link_box = QGroupBox()
+        link_layout = QVBoxLayout()
+        self.link_title = QLabel('<h4>Personal Links</h4>')
         self.link_title.setVisible(False)
-        layout.addWidget(self.link_title)
-        layout.addLayout(self.link_layout)
+        link_layout.addWidget(self.link_title)
+        link_layout.addLayout(self.link_layout)
         link_button = QPushButton('Add Personal Link')
         link_button.clicked.connect(self.add_link)
-        layout.addWidget(link_button)
+        link_layout.addWidget(link_button)
+        link_box.setLayout(link_layout)
+        layout.addWidget(link_box)
 
         # Custom attribute section
-        self.custom_attribute_title = QLabel('<h4>Custom Attributes:</h4>')
+        custom_attribute_box = QGroupBox()
+        custom_attribute_layout = QVBoxLayout()
+        self.custom_attribute_title = QLabel('<h4>Custom Attributes</h4>')
         self.custom_attribute_title.setVisible(False)
-        layout.addWidget(self.custom_attribute_title)
-        layout.addLayout(self.custom_attribute_layout)
+        custom_attribute_layout.addWidget(self.custom_attribute_title)
+        custom_attribute_layout.addLayout(self.custom_attribute_layout)
         custom_button = QPushButton('Add Custom Attribute')
         custom_button.clicked.connect(self.add_custom_attribute)
-        layout.addWidget(custom_button)
+        custom_attribute_layout.addWidget(custom_button)
+        custom_attribute_box.setLayout(custom_attribute_layout)
+        layout.addWidget(custom_attribute_box)
 
-        # Relationship list
-        relationship_list_layout = QVBoxLayout()
-        relationship_list_title = QLabel('<h4>Relationships:</h4>')
-        relationship_list_layout.addWidget(relationship_list_title)
-        self.relationship_list = QVBoxLayout()
-        relationship_list_layout.addLayout(self.relationship_list)
-        layout.addLayout(relationship_list_layout)
-
-        # Relationship input
+        # Relationship section
+        relationship_box = QGroupBox()
         relationship_layout = QVBoxLayout()
+        relationship_list_title = QLabel('<h4>Relationships</h4>')
+        relationship_layout.addWidget(relationship_list_title)
+        relationship_layout.addLayout(self.relationship_list)
         relationship_input_layout = QHBoxLayout()
         relationship_input_label = QLabel("Name:")
         relationship_input_layout.addWidget(relationship_input_label)
@@ -199,14 +223,10 @@ class PersonCreationTab(QWidget):
         self.relationship_input.textChanged.connect(self.update_suggestions)
         relationship_input_layout.addWidget(self.relationship_input)
         relationship_layout.addLayout(relationship_input_layout)
-
-        # Suggestion dropdown
-        self.suggestion_list = QListWidget()
-        self.suggestion_list.setVisible(False)
-        self.suggestion_list.itemClicked.connect(self.autofill_relationship)
+        self.suggestion_list = QListWidget()  # Add this line
+        self.suggestion_list.setVisible(False)  # Add this line
+        self.suggestion_list.itemClicked.connect(self.autofill_relationship)  # Add this line
         relationship_layout.addWidget(self.suggestion_list)
-
-        # Relationship type and add button layout
         relationship_type_layout = QHBoxLayout()
         self.relationship_type = QComboBox()
         self.relationship_type.addItem('Friends')
@@ -216,24 +236,18 @@ class PersonCreationTab(QWidget):
         self.relationship_type.addItem('Custom')
         self.relationship_type.currentTextChanged.connect(self.handle_relationship_type)
         relationship_type_layout.addWidget(self.relationship_type)
-
-        # Custom relationship input
         self.custom_relationship_input = QLineEdit()
         self.custom_relationship_input.setVisible(False)
         relationship_type_layout.addWidget(self.custom_relationship_input)
-
-        # Directed relationship checkbox
         self.directed_checkbox = QCheckBox("Directed")
         self.directed_checkbox.setVisible(False)
         relationship_type_layout.addWidget(self.directed_checkbox)
-
-        # Add relationship button
         add_relationship_button = QPushButton('Add Relationship')
         add_relationship_button.clicked.connect(self.add_relationship)
         relationship_type_layout.addWidget(add_relationship_button)
-
         relationship_layout.addLayout(relationship_type_layout)
-        layout.addLayout(relationship_layout)
+        relationship_box.setLayout(relationship_layout)
+        layout.addWidget(relationship_box)
 
         # Create person button
         create_button = QPushButton('Create Person')
@@ -303,7 +317,7 @@ class PersonCreationTab(QWidget):
 
         if name:
             person = Person(name, self.parent.group)
-            self.person = person  # Add this line
+            self.person = person
             if bio:
                 person.bio = bio
 
@@ -415,7 +429,7 @@ class PersonCreationTab(QWidget):
             directed = self.directed_checkbox.isChecked()
         else:
             relationship = relationship_type.lower()
-            directed = relationship not in ['friends', 'partner', 'coworkers/colleagues']
+            directed = relationship not in ['friend', 'partner', 'coworker/colleague']
 
         if target_name:
             self.relationships.append((target_name, relationship, directed))
@@ -433,19 +447,28 @@ class PersonEditTab(QWidget):
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
+        self.email_layout = QVBoxLayout()  # Add this line
+        self.link_layout = QVBoxLayout()  # Add this line
+        self.custom_attribute_layout = QVBoxLayout()  # Add this line
+        self.relationship_layout = QVBoxLayout()  # Add this line
         self.init_ui()
 
     def init_ui(self):
         layout = QVBoxLayout()
 
         # Person name
+        person_name_box = QGroupBox()
+        person_name_layout = QVBoxLayout()
         self.person_name_label = QLabel()
         self.person_name_label.setStyleSheet("font-weight: bold; font-size: 16px;")
-        layout.addWidget(self.person_name_label)
+        person_name_layout.addWidget(self.person_name_label)
+        person_name_box.setLayout(person_name_layout)
+        layout.addWidget(person_name_box)
 
-        # Bio layout
+        # Bio section
+        bio_box = QGroupBox()
         bio_layout = QVBoxLayout()
-        self.bio_label = QLabel('<h4>Bio:</h4>')
+        self.bio_label = QLabel('<h4>Bio</h4>')
         self.bio_label.setVisible(False)
         self.bio_text = QLabel()
         self.bio_text.setWordWrap(True)
@@ -454,53 +477,53 @@ class PersonEditTab(QWidget):
         bio_layout.addWidget(self.bio_label)
         bio_layout.addWidget(self.bio_text)
         bio_layout.addWidget(self.bio_button)
-        layout.addLayout(bio_layout)
+        bio_box.setLayout(bio_layout)
+        layout.addWidget(bio_box)
 
-        # Attribute layout
-        self.attribute_layout = QFormLayout()
-        layout.addLayout(self.attribute_layout)
-
-        # Email layout
-        self.email_title = QLabel('<h4>Emails:</h4>')
-        layout.addWidget(self.email_title)
-        self.email_layout = QVBoxLayout()
-        layout.addLayout(self.email_layout)
-
-        # Add email button
+        # Email section
+        email_box = QGroupBox()
+        email_layout = QVBoxLayout()
+        self.email_title = QLabel('<h4>Emails</h4>')  # Add this line
+        self.email_title.setVisible(False)  # Add this line
+        email_layout.addWidget(self.email_title)
+        email_layout.addLayout(self.email_layout)
         add_email_button = QPushButton('Add Email')
         add_email_button.clicked.connect(self.add_email)
-        layout.addWidget(add_email_button)
+        email_layout.addWidget(add_email_button)
+        email_box.setLayout(email_layout)
+        layout.addWidget(email_box)
 
-        # Link layout
-        self.link_title = QLabel('<h4>Personal Links:</h4>')
-        layout.addWidget(self.link_title)
-        self.link_layout = QVBoxLayout()
-        layout.addLayout(self.link_layout)
-
-        # Add link button
+        # Link section
+        link_box = QGroupBox()
+        link_layout = QVBoxLayout()
+        self.link_title = QLabel('<h4>Personal Links</h4>')  # Add this line
+        self.link_title.setVisible(False)  # Add this line
+        link_layout.addWidget(self.link_title)
+        link_layout.addLayout(self.link_layout)
         add_link_button = QPushButton('Add Personal Link')
         add_link_button.clicked.connect(self.add_link)
-        layout.addWidget(add_link_button)
+        link_layout.addWidget(add_link_button)
+        link_box.setLayout(link_layout)
+        layout.addWidget(link_box)
 
-        # Custom attribute layout
-        self.custom_attribute_title = QLabel('<h4>Custom Attributes:</h4>')
-        layout.addWidget(self.custom_attribute_title)
-        self.custom_attribute_layout = QVBoxLayout()
-        layout.addLayout(self.custom_attribute_layout)
-
-        # Add custom attribute button
+        # Custom attribute section
+        custom_attribute_box = QGroupBox()
+        custom_attribute_layout = QVBoxLayout()
+        self.custom_attribute_title = QLabel('<h4>Custom Attributes</h4>')  # Add this line
+        self.custom_attribute_title.setVisible(False)  # Add this line
+        custom_attribute_layout.addWidget(self.custom_attribute_title)
+        custom_attribute_layout.addLayout(self.custom_attribute_layout)
         add_custom_attribute_button = QPushButton('Add Custom Attribute')
         add_custom_attribute_button.clicked.connect(self.add_custom_attribute)
-        layout.addWidget(add_custom_attribute_button)
+        custom_attribute_layout.addWidget(add_custom_attribute_button)
+        custom_attribute_box.setLayout(custom_attribute_layout)
+        layout.addWidget(custom_attribute_box)
 
-        # Relationship list
-        relationship_title = QLabel('<h4>Relationships:</h4>')
-        layout.addWidget(relationship_title)
-        self.relationship_layout = QVBoxLayout()
-        layout.addLayout(self.relationship_layout)
-
-        # Relationship input
+        # Relationship section
+        relationship_box = QGroupBox()
         relationship_layout = QVBoxLayout()
+        relationship_layout.addWidget(QLabel('<h4>Relationships</h4>'))
+        relationship_layout.addLayout(self.relationship_layout)  # Update this line
         relationship_input_layout = QHBoxLayout()
         relationship_input_label = QLabel("Name:")
         relationship_input_layout.addWidget(relationship_input_label)
@@ -508,14 +531,10 @@ class PersonEditTab(QWidget):
         self.relationship_input.textChanged.connect(self.update_suggestions)
         relationship_input_layout.addWidget(self.relationship_input)
         relationship_layout.addLayout(relationship_input_layout)
-
-        # Suggestion dropdown
-        self.suggestion_list = QListWidget()
-        self.suggestion_list.setVisible(False)
-        self.suggestion_list.itemClicked.connect(self.autofill_relationship)
+        self.suggestion_list = QListWidget()  # Add this line
+        self.suggestion_list.setVisible(False)  # Add this line
+        self.suggestion_list.itemClicked.connect(self.autofill_relationship)  # Add this line
         relationship_layout.addWidget(self.suggestion_list)
-
-        # Relationship type and add button layout
         relationship_type_layout = QHBoxLayout()
         self.relationship_type = QComboBox()
         self.relationship_type.addItem('Friends')
@@ -525,24 +544,18 @@ class PersonEditTab(QWidget):
         self.relationship_type.addItem('Custom')
         self.relationship_type.currentTextChanged.connect(self.handle_relationship_type)
         relationship_type_layout.addWidget(self.relationship_type)
-
-        # Custom relationship input
         self.custom_relationship_input = QLineEdit()
         self.custom_relationship_input.setVisible(False)
         relationship_type_layout.addWidget(self.custom_relationship_input)
-
-        # Directed relationship checkbox
         self.directed_checkbox = QCheckBox("Directed")
         self.directed_checkbox.setVisible(False)
         relationship_type_layout.addWidget(self.directed_checkbox)
-
-        # Add relationship button
         add_relationship_button = QPushButton('Add Relationship')
         add_relationship_button.clicked.connect(self.add_relationship)
         relationship_type_layout.addWidget(add_relationship_button)
-
         relationship_layout.addLayout(relationship_type_layout)
-        layout.addLayout(relationship_layout)
+        relationship_box.setLayout(relationship_layout)
+        layout.addWidget(relationship_box)
 
         # Delete Person button
         delete_person_button = QPushButton('Delete Person')
@@ -555,7 +568,6 @@ class PersonEditTab(QWidget):
         self.person = self.parent.group.people[person_name]
         self.person_name_label.setText(self.person.fullname)
         self.update_bio_display()
-        self.update_attribute_layout()
         self.update_email_layout()
         self.update_link_layout()
         self.update_custom_attribute_layout()
@@ -588,27 +600,6 @@ class PersonEditTab(QWidget):
             bio = self.bio_editor.toPlainText()
             self.person.bio = bio
             self.update_bio_display()
-
-    def update_attribute_layout(self):
-        # Clear the attribute layout
-        while self.attribute_layout.rowCount():
-            self.attribute_layout.removeRow(0)
-
-        # Add attribute labels and edit buttons
-        for attr_name, attr_value in self.person.__dict__.items():
-            if attr_name not in ['firstname', 'lastname', 'middle', 'fullname', 'group', 'emails', 'links', 'custom_attributes', 'bio'] and attr_name not in self.person.group.relationships:
-                attribute_label = QLabel(f"{attr_name.capitalize()}:")
-                attribute_widget = QWidget()
-                attribute_layout = QHBoxLayout(attribute_widget)
-                attribute_value_label = QLabel(str(attr_value))
-                edit_button = QPushButton('Edit')
-                edit_button.clicked.connect(lambda checked, a=attr_name, w=attribute_widget: self.edit_attribute(a, w))
-                delete_button = QPushButton('Delete')
-                delete_button.clicked.connect(lambda checked, a=attr_name: self.delete_attribute(a))
-                attribute_layout.addWidget(attribute_value_label)
-                attribute_layout.addWidget(edit_button)
-                attribute_layout.addWidget(delete_button)
-                self.attribute_layout.addRow(attribute_label, attribute_widget)
 
     def update_email_layout(self):
         # Clear the email layout
@@ -845,10 +836,6 @@ class PersonEditTab(QWidget):
         attribute_input.setParent(None)
         save_button.setParent(None)
 
-    def delete_attribute(self, attr_name):
-        delattr(self.person, attr_name)
-        self.update_attribute_layout()
-
     def update_relationship_list(self):
         for i in reversed(range(self.relationship_layout.count())):
             relationship_widget = self.relationship_layout.itemAt(i).widget()
@@ -905,13 +892,14 @@ class PersonEditTab(QWidget):
             directed = self.directed_checkbox.isChecked()
         else:
             relationship = relationship_type.lower()
-            directed = relationship not in ['friends', 'partner', 'coworkers/colleagues']
+            directed = relationship not in ['friend', 'partner', 'coworker/colleague']
 
         if target_name:
             if directed:
                 self.person.add_directed_relationship(target_name, relationship)
             else:
                 self.person.add_undirected_relationship(target_name, relationship)
+            self.parent.update_person_list()
             self.relationship_input.clear()
             self.custom_relationship_input.clear()
             self.suggestion_list.setVisible(False)

@@ -119,7 +119,18 @@ class Person:
         self.links = []
 
     def add_undirected_relationship(self, name, relationship):
-        """Add a mutual relationship (such as 'friends') to the Person 'name'."""
+        """Add a mutual relationship (such as 'friend') to the Person 'name'."""
+        # Find target
+        target = Person(name, self.group)
+        target_name = target.fullname
+        if target_name in self.group.people:
+            target = self.group.people[target_name]
+        
+        # 'parent' is an alias for child in the other direction
+        if relationship == 'parent':
+            target.add_undirected_relationship(self.fullname, 'child')
+            return
+
         # Store type of relationship in group relationships
         if relationship not in self.group.relationships:
             self.group.relationships[relationship] = 'undirected'
@@ -129,12 +140,6 @@ class Person:
         # Initialize self relationship
         if not hasattr(self, relationship):
             setattr(self, relationship, [])
-
-        # Find target
-        target = Person(name, self.group)
-        target_name = target.fullname
-        if target_name in self.group.people:
-            target = self.group.people[target_name]
 
         # Set the relationship of both self and target
         if target_name not in getattr(self, relationship):
